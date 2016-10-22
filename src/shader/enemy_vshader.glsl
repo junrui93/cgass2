@@ -26,7 +26,7 @@ void main() {
             // point light or spotlight (or other kind of light)
             vec3 vertexToLightSource = vec3(gl_LightSource[i].position - gl_ModelViewMatrix * gl_Vertex);
             float distance = length(vertexToLightSource);
-            attenuation = 1.0 / (1.0 + 0.5 * distance); // linear attenuation
+            attenuation = 1.0 / (1.0 + 1 * distance); // linear attenuation
             lightDirection = normalize(vertexToLightSource);
 
             if (gl_LightSource[i].spotCutoff <= 90.0) {
@@ -42,7 +42,7 @@ void main() {
             }
         }
 
-        vec3 ambientLighting = vec3(gl_LightSource[i].ambient);
+        vec3 ambientLighting = attenuation * vec3(gl_LightSource[i].ambient);
 
         vec3 diffuseReflection = attenuation
             * vec3(gl_LightSource[i].diffuse)
@@ -63,8 +63,11 @@ void main() {
         specularColor += specularReflection;
     }
 
-    diffuseColor = vec3(gl_FrontMaterial.ambient) * (vec3(gl_LightModel.ambient) + ambientColor)
+    ambientColor += vec3(gl_LightModel.ambient);
+
+    diffuseColor = vec3(gl_FrontMaterial.ambient) * ambientColor
                  + vec3(gl_FrontMaterial.diffuse) * diffuseColor;
+
     specularColor = vec3(gl_FrontMaterial.specular) * specularColor;
 
     texCoords = vec2(gl_MultiTexCoord0);

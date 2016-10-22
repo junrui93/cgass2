@@ -149,7 +149,7 @@ public class Game extends JFrame implements GLEventListener, KeyListener {
             gl.glLightf(GL2.GL_LIGHT1, GL2.GL_SPOT_CUTOFF, 30);
             gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_SPOT_DIRECTION, spotDirection,0);
             gl.glLightf(GL2.GL_LIGHT1, GL2.GL_SPOT_EXPONENT, 2);
-            gl.glLightf(GL2.GL_LIGHT1, GL2.GL_LINEAR_ATTENUATION, 0.5f);
+            gl.glLightf(GL2.GL_LIGHT1, GL2.GL_LINEAR_ATTENUATION, 1.0f);
 
             gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_AMBIENT, new float[] {0.9f, 0.9f, 0.9f, 1}, 0);
             gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_DIFFUSE, new float[] {0.9f, 0.9f, 0.9f, 1}, 0);
