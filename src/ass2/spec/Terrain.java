@@ -4,6 +4,7 @@ import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL2;
 
 import java.awt.*;
+import java.io.IOException;
 import java.nio.DoubleBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,6 +39,7 @@ public class Terrain {
     private int[] myBufferIds = new int[4];
 
     private MyTexture myTexture;
+    private int shaderProgram;
 
     /**
      * Create a new terrain
@@ -304,10 +306,20 @@ public class Terrain {
 //        gl.glBufferData(GL2.GL_ELEMENT_ARRAY_BUFFER, indexes.length * Short.BYTES, indexesBuffer, GL2.GL_STATIC_DRAW);
 
         myTexture = new MyTexture(gl, TEX_FILE_NAME);
+
+        try {
+            shaderProgram = Shader.initShaders(gl, "/shader/per_pixel_vshader.glsl", "/shader/per_pixel_fshader.glsl");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(0);
+        }
     }
 
     private void draw(GL2 gl) {
         gl.glBindTexture(GL2.GL_TEXTURE_2D, myTexture.getTextureId());
+
+        gl.glUseProgram(shaderProgram);
+        gl.glUniform1i(gl.glGetUniformLocation(shaderProgram, "texUnit"), 0);
 
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT, AMBIENT, 0);
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_DIFFUSE, DIFFUSE, 0);
@@ -338,6 +350,8 @@ public class Terrain {
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
         //gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, 0);
         gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+
+        gl.glUseProgram(0);
 
         // just for debug
 //        gl.glDisable(GL2.GL_TEXTURE_2D);

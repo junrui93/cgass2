@@ -28,6 +28,7 @@ public class Road {
     private double myWidth;
 
     private MyTexture myTexture;
+    private int shaderProgram;
 
     /** 
      * Create a new road starting at the specified point
@@ -216,10 +217,20 @@ public class Road {
     public void init(GL2 gl, Terrain terrain) {
         myTexture = new MyTexture(gl, TEX_FILE_NAME);
         setMyTerrain(terrain);
+
+        try {
+            shaderProgram = Shader.initShaders(gl, "/shader/per_pixel_vshader.glsl", "/shader/per_pixel_fshader.glsl");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(0);
+        }
     }
 
     public void draw(GL2 gl) {
         gl.glBindTexture(GL2.GL_TEXTURE_2D, myTexture.getTextureId());
+
+        gl.glUseProgram(shaderProgram);
+        gl.glUniform1i(gl.glGetUniformLocation(shaderProgram, "texUnit"), 0);
 
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT, AMBIENT, 0);
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_DIFFUSE, DIFFUSE, 0);
@@ -311,6 +322,7 @@ public class Road {
 //        gl.glEnd();
 
         gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+        gl.glUseProgram(0);
     }
 
     public static void main(String[] args) {
